@@ -20,9 +20,11 @@ $ ('form').submit(
 
 socket.on(
     'spread message',
-    (strMessage) => {
-        console.log('spread message: ', strMessage);
+    (objMessage) => {
+        console.log('spread message: ', objMessage);
+        
+        const strText = objMessage.strDate + '-' + objMessage.strMessage;
 
-        const li_element = $('<li>').text(strMessage);
+        const li_element = $('<li>').text(strText);
         $('#message_list').prepend(li_element);
     });

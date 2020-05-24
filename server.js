@@ -36,7 +36,14 @@ io.on(
             (strMessage) => {
                 console.log('new message', strMessage);
 
-                io.emit('spread message', strMessage);
+                require('date-utils')
+                const strNow = new Date().toFormat('YYYY年M月D日 H時MI分SS秒');
+
+                const objMessage = {
+                    strMessage: strMessage,
+                    strDate: strNow
+                }
+                io.emit('spread message', objMessage);
             });
     } );
 
