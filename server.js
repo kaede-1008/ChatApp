@@ -7,11 +7,12 @@ const socketIO = require( 'socket.io' );
 
 // オブジェクト
 const app = express();
-const server = http.Server( app );
-const io = socketIO( server );
+const server = http.Server(app);
+const io = socketIO(server);
 
 // 定数
 const PORT = process.env.PORT || 8080;
+let strNickname = '';
 
 // 接続時の処理
 // ・サーバーとクライアントの接続が確立すると、
@@ -19,9 +20,9 @@ const PORT = process.env.PORT || 8080;
 // 　クライアント側で、'connect'イベントが発生する
 io.on(
     'connection',
-    ( socket ) =>
+    (socket) =>
     {
-        console.log( 'connection' );
+        console.log('connection');
 
         // 切断時の処理
         // ・クライアントが切断したら、サーバー側では'disconnect'イベントが発生する
@@ -29,8 +30,16 @@ io.on(
             'disconnect',
             () =>
             {
-                console.log( 'disconnect' );
-            } );
+                console.log('disconnect');
+            });
+        
+        socket.on(
+            'join',
+            (strNickname_) => {
+                console.log('joined: ', strNickname_);
+                strNickname = strNickname_
+            });
+        
         socket.on(
             'new message',
             (strMessage) => {
@@ -40,20 +49,21 @@ io.on(
                 const strNow = new Date().toFormat('YYYY年M月D日 H時MI分SS秒');
 
                 const objMessage = {
+                    strNickname: strNickname,
                     strMessage: strMessage,
                     strDate: strNow
                 }
                 io.emit('spread message', objMessage);
             });
-    } );
+    });
 
 // 公開フォルダの指定
-app.use( express.static( __dirname + '/public' ) );
+app.use(express.static(__dirname + '/public'));
 
 // サーバーの起動
 server.listen(
     PORT,
     () =>
     {
-        console.log( 'Server on port %d', PORT );
-    } );
+        console.log('Server on port %d', PORT);
+    });
