@@ -12,18 +12,22 @@ const io = socketIO(server);
 
 // 定数
 const PORT = process.env.PORT || 8080;
-let strNickname = '';
+const SYSTEMNICKNAME = '**system**';
 
 // 接続時の処理
 // ・サーバーとクライアントの接続が確立すると、
 // 　サーバー側で、'connection'イベント
 // 　クライアント側で、'connect'イベントが発生する
+
+let iCountUser = 0;
+
 io.on(
     'connection',
     (socket) =>
     {
         console.log('connection');
 
+        let strNickname = '';
         // 切断時の処理
         // ・クライアントが切断したら、サーバー側では'disconnect'イベントが発生する
         socket.on(
@@ -31,13 +35,35 @@ io.on(
             () =>
             {
                 console.log('disconnect');
+                if (strNickname) {
+                    iCountUser--;
+
+                    require('date-utils')
+                    const strNow = new Date();
+                    const objMessage = {
+                        strNickname: SYSTEMNICKNAME,
+                        strMessage: strNickname + ' left.' + " there are " + iCountUser + " participants",
+                        strDate: strNow
+                    }
+                    io.emit('sprad message', objMessage);
+                }
             });
         
         socket.on(
             'join',
             (strNickname_) => {
                 console.log('joined: ', strNickname_);
-                strNickname = strNickname_
+                strNickname = strNickname_;
+
+                iCountUser++;
+                require('date-utils')
+                const strNow = new Date();
+                const objMessage = {
+                    strNickname: SYSTEMNICKNAME,
+                    strMessage: strNickname + ' joined.' + " there are " + iCountUser + " participants",
+                    strDate: strNow
+                }
+                io.emit('spread message', objMessage);
             });
         
         socket.on(
