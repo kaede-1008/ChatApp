@@ -45,7 +45,7 @@ io.on(
                         strMessage: strNickname + ' left.' + " there are " + iCountUser + " participants",
                         strDate: strNow
                     }
-                    io.emit('sprad message', objMessage);
+                    io.emit('spread message', objMessage);
                 }
             });
         
