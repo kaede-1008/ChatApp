@@ -1,23 +1,12 @@
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./db/chat.db', (err) => {
-    if (err) {
-        return console.error(err.message);
-    }
-    console.log('Connected to the in-memory SQlite database.');
-});
+var mysql = require('mysql');
 
-const init = () => {
-    db.run(`
-        CREATE TABLE IF NOT EXISTS room (
-            id TEXT NOT NULL PRIMARY KEY,
-            master TEXT NOT NULL,
-            num INTEGER NOT NULL,
-            maxnum INTEGER NOT NULL
-        )
-    `);
+var dbConfig = {
+  host: '127.0.0.1',
+  user: 'root',
+  password: '',
+  database: 'user'
 };
 
-module.exports = {
-    db: db,
-    init: init
-};
+var connection = mysql.createConnection(dbConfig);
+
+module.exports = connection;
